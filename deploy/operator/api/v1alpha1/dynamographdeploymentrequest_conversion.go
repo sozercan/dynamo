@@ -343,7 +343,7 @@ func applyModelCacheFromBlob(blob map[string]interface{}, dst *v1beta1.DynamoGra
 // convertProfilingResourcesToOverrides maps ProfilingConfig Resources and Tolerations
 // into the v1beta1 Overrides.ProfilingJob pod spec.
 func convertProfilingResourcesToOverrides(src *ProfilingConfigSpec, dst *v1beta1.DynamoGraphDeploymentRequestSpec) {
-	if src.Resources == nil && len(src.Tolerations) == 0 {
+	if src.Resources == nil && len(src.Tolerations) == 0 && len(src.NodeSelector) == 0 {
 		return
 	}
 	if dst.Overrides == nil {
@@ -366,6 +366,9 @@ func convertProfilingResourcesToOverrides(src *ProfilingConfigSpec, dst *v1beta1
 	}
 	if len(src.Tolerations) > 0 {
 		podSpec.Tolerations = src.Tolerations
+	}
+	if len(src.NodeSelector) > 0 {
+		podSpec.NodeSelector = src.NodeSelector
 	}
 }
 
@@ -587,6 +590,9 @@ func restoreProfilingJobResources(src *v1beta1.DynamoGraphDeploymentRequestSpec,
 	}
 	if len(podSpec.Tolerations) > 0 {
 		dst.ProfilingConfig.Tolerations = podSpec.Tolerations
+	}
+	if len(podSpec.NodeSelector) > 0 {
+		dst.ProfilingConfig.NodeSelector = podSpec.NodeSelector
 	}
 }
 
